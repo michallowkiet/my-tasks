@@ -37,6 +37,7 @@ DEBUG = getenv("DJANGO_DEBUG", "False") == "True"
 ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 ALLOWED_CORS_ORIGINS = getenv("DJANGO_ALLOWED_CORS_ORIGINS", "http://localhost:3000").split(",")
+CORS_ALLOW_CREDENTIALS: True
 
 # Application definition
 
@@ -62,6 +63,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = "my_tasks.urls"

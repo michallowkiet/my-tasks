@@ -3,7 +3,9 @@ from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .models import CustomUser
 from .serializers import CustomUserSerializer, SignInUserSerializer, SignUpUserSerializer
@@ -65,3 +67,23 @@ class SignOutUserView(APIView):
         response.delete_cookie("refresh_token")
 
         return response
+
+
+class CookieRefreshTokenView(TokenRefreshView):
+    def post(self, request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if not refresh_token:
+            return Response({"error": "Refresh token not provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
+
+            response = Response(status=status.HTTP_200_OK)
+            response.set_cookie("access_token", access_token, httponly=True, secure=True, samesite="Strict")
+            return response
+        except InvalidToken:
+            return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
