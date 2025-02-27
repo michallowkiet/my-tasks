@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -35,10 +36,32 @@ class SignInUserView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data
             token = RefreshToken.for_user(user)
-            return Response(
-                {
-                    "refresh": str(token),
-                    "access": str(token.access_token),
-                }
+
+            response = Response(
+                status=status.HTTP_200_OK,
             )
-        return Response(serializer.errors, status=400)
+
+            response.set_cookie("access_token", str(token.access_token), httponly=True, secure=True, samesite="Strict")
+            response.set_cookie("refresh_token", str(token), httponly=True, secure=True, samesite="Strict")
+
+            return response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignOutUserView(APIView):
+    def post(self, request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            except Exception:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        response = Response(status=status.HTTP_200_OK)
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+
+        return response
