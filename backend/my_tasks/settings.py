@@ -32,7 +32,7 @@ if Path.is_file(dotenv_path):
 SECRET_KEY = getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv("DJANGO_DEBUG", "False") == "True"
+DEBUG = getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
@@ -94,8 +94,12 @@ WSGI_APPLICATION = "my_tasks.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.{}".format(getenv("DATABASE_ENGINE", "sqlite3")),
+        "NAME": getenv("DATABASE_NAME", BASE_DIR / "db.sqlite3"),
+        "USER": getenv("DATABASE_USERNAME", "myprojectuser"),
+        "PASSWORD": getenv("DATABASE_PASSWORD", "password"),
+        "HOST": getenv("DATABASE_HOST", "127.0.0.1"),
+        "PORT": getenv("DATABASE_PORT", "5432"),
     }
 }
 
