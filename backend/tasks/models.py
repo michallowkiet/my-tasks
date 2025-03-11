@@ -26,10 +26,10 @@ class Task(models.Model):
     due_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    assigned_user = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="tasks")
-    author_user = models.ForeignKey(
-        "users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="created_tasks"
+    assigned_user = models.ForeignKey(
+        "users.CustomUser", on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_user"
     )
+    author = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="author")
 
     def __str__(self):
         return self.title
@@ -46,7 +46,7 @@ class Tag(models.Model):
 class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="comments")
     content = models.TextField()
-    user = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="comments")
+    user = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="comment_author")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -56,32 +56,9 @@ class Comment(models.Model):
 class Attachment(models.Model):
     fileUrl = models.URLField()
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="attachments")
-    user = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="attachments")
+    user = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="owner")
     created_at = models.DateTimeField(auto_now_add=True)
     fileName = models.CharField(max_length=200)
 
     def __str__(self):
         return f"Attachment for {self.task.title}"
-
-
-class Project(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    tasks = models.ManyToManyField(Task, related_name="projects")
-    users = models.ManyToManyField("users.CustomUser", related_name="projects")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=200)
-    members = models.ManyToManyField("users.CustomUser", related_name="teams")
-    projects = models.ManyToManyField(Project, related_name="teams")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
