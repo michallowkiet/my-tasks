@@ -3,16 +3,13 @@
 App for help with manage every day tasks like shopping, day to day activities and more. Plus it has a calendar view where you can see all your tasks in one place. Extra features include:
 
 ## Features
-- [ ] User authentication and authorization*.
-- [ ] Task creation and editing*.
-- [ ] Task deletion*.
-- [ ] Task categorization*.
-- [ ] Task priority setting*.
-- [ ] Calendar integration for task scheduling*.
+- [x] User authentication and authorization*.
+- [ ] Create, update and delete Task*.
 - [ ] Dark mode support*.
-- [ ] Responsive design for mobile devices*.
 - [ ] Task filtering by date, category, or priority*.
 - [ ] Task reminders with customizable notification settings*.
+- [ ] Responsive design for mobile devices*.
+- [ ] Calendar integration for task scheduling*.
 - [ ] Docker containerization for easy deployment*.
   
   *Note: The asterisk (\*) indicates that the feature is currently under development and may not be fully functional yet.*
