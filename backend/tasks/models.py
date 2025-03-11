@@ -26,10 +26,10 @@ class Task(models.Model):
     due_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    assigned_user = models.ForeignKey(
-        "users.CustomUser", on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_user"
+    assigned = models.ForeignKey(
+        "users.CustomUser", on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned"
     )
-    author = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="author")
+    owner = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="owner")
 
     def __str__(self):
         return self.title
@@ -56,7 +56,7 @@ class Comment(models.Model):
 class Attachment(models.Model):
     fileUrl = models.URLField()
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="attachments")
-    user = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="owner")
+    user = models.ForeignKey("users.CustomUser", on_delete=models.SET_NULL, null=True, related_name="attachment_owner")
     created_at = models.DateTimeField(auto_now_add=True)
     fileName = models.CharField(max_length=200)
 
