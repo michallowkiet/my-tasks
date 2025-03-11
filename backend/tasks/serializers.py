@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Task
+from .models import Attachment, Comment, Tag, Task
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -21,4 +21,22 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class TaskSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Task
+        fields = "__all__"
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attachment
         fields = "__all__"

@@ -3,25 +3,23 @@ from django.db import models
 
 # Create your models here.
 class Task(models.Model):
-    status_choices = [
-        ("To Do", "To Do"),
-        ("In Progress", "In Progress"),
-        ("Done", "Done"),
-        ("Canceled", "Canceled"),
-        ("Overdue", "Overdue"),
-        ("Paused", "Paused"),
-    ]
+    class StatusChoices(models.TextChoices):
+        TO_DO = "To Do", "To Do"
+        IN_PROGRESS = "In Progress", "In Progress"
+        DONE = "Done", "Done"
+        CANCELED = "Canceled", "Canceled"
+        OVERDUE = "Overdue", "Overdue"
+        PAUSED = "Paused", "Paused"
 
-    priority_choices = [
-        ("Low", "Low"),
-        ("Medium", "Medium"),
-        ("High", "High"),
-    ]
+    class PriorityChoices(models.TextChoices):
+        LOW = "Low", "Low"
+        MEDIUM = "Medium", "Medium"
+        HIGH = "High", "High"
 
     title = models.CharField(max_length=200)
     description = models.TextField()
-    status = models.CharField(max_length=30, choices=status_choices, default="To Do")
-    priority = models.CharField(max_length=30, choices=priority_choices, default="Low")
+    status = models.CharField(max_length=30, choices=StatusChoices.choices, default="To Do")
+    priority = models.CharField(max_length=30, choices=PriorityChoices.choices, default="Low")
     start_date = models.DateTimeField()
     due_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
